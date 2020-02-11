@@ -1,4 +1,6 @@
 (function () {
+    'use strict';
+
     var FILL_COLOR = color(255, 255, 255, 0); // transparent
     var BORDER_COLOR = color(0, 0, 0);
     var UNIVERSE_STROKE_WEIGHT = 1;
@@ -14,7 +16,7 @@
         stroke(BORDER_COLOR);
         strokeWeight(UNIVERSE_STROKE_WEIGHT);
         rect(UNIVERSE_LEFTSIDE, UNIVERSE_TOPSIDE,
-            UNIVERSE_WIDTH, UNIVERSE_HEIGHT);
+                UNIVERSE_WIDTH, UNIVERSE_HEIGHT);
 
         return function (x, y) {
             return true;
