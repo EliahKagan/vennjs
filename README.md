@@ -10,6 +10,7 @@ worldwide. This software is distributed without any warranty.*
 this software. If not, see
 <http://creativecommons.org/publicdomain/zero/1.0/>.*
 
-This version uses Processing.js. It is essentially the same as the version
-hosted at
-https://www.khanacademy.org/computer-programming/venn/5555884232556544.
+This version uses p5.js.
+
+This is (usually) the same code as [hosted in the p5js web
+editor](https://editor.p5js.org/Eliah/sketches/YODuj_T-).

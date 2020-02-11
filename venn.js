@@ -10,113 +10,113 @@
 // with this software. If not, see
 // <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-(function () {
+function setup() {
+    'use strict';
+    createCanvas(400, 400);
+    noLoop();
+}
+
+function draw() {
+    'use strict';
+    background(255);
+    main();
+}
+
+function main() {
     'use strict';
 
-    var FILL_COLOR = color(255, 255, 255, 0); // transparent
-    var BORDER_COLOR = color(0, 0, 0);
-    var UNIVERSE_STROKE_WEIGHT = 1;
-    var CLASS_STROKE_WEIGHT = 3;
+    const FILL_COLOR = color(255, 255, 255, 0); // transparent
+    const BORDER_COLOR = color(0, 0, 0);
+    const UNIVERSE_STROKE_WEIGHT = 1;
+    const CLASS_STROKE_WEIGHT = 3;
 
-    var UNIVERSE_LEFTSIDE = 20;
-    var UNIVERSE_TOPSIDE = 20;
-    var UNIVERSE_WIDTH = 350;
-    var UNIVERSE_HEIGHT = 325;
+    const UNIVERSE_LEFTSIDE = 20;
+    const UNIVERSE_TOPSIDE = 20;
+    const UNIVERSE_WIDTH = 350;
+    const UNIVERSE_HEIGHT = 325;
 
-    var makeUniverse = function () {
+    function makeUniverse() {
         fill(FILL_COLOR);
         stroke(BORDER_COLOR);
         strokeWeight(UNIVERSE_STROKE_WEIGHT);
         rect(UNIVERSE_LEFTSIDE, UNIVERSE_TOPSIDE,
-                UNIVERSE_WIDTH, UNIVERSE_HEIGHT);
+            UNIVERSE_WIDTH, UNIVERSE_HEIGHT);
 
-        return function (x, y) {
-            return true;
-        };
-    };
+        return (x, y) => true;
+    }
 
-    var makeCircle = function (cx, cy, r) {
+    function makeCircle(cx, cy, r) {
         fill(FILL_COLOR);
         stroke(BORDER_COLOR);
         strokeWeight(CLASS_STROKE_WEIGHT);
         ellipse(cx, cy, r * 2, r * 2);
 
-        return function (x, y) {
-            return sq(x - cx) + sq(y - cy) <= sq(r);
-        };
-    };
+        return (x, y) => sq(x - cx) + sq(y - cy) <= sq(r);
+    }
 
     // Class complement / boolean negation ("NOT").
-    var compl = function (f) {
-        return function (x, y) {
-            return !f(x, y);
-        };
-    };
+    function compl(f) {
+        return (x, y) => !f(x, y);
+    }
 
     // Class intersection / boolean conjunction ("AND").
-    var intersection = function (f, g) {
-        return function (x, y) {
-            return f(x, y) && g(x, y);
-        };
-    };
+    function intersection(f, g) {
+        return (x, y) => f(x, y) && g(x, y);
+    }
 
     // Class union / boolean disjunction ("OR").
-    var union = function (f, g) {
-        return function (x, y) {
-            return f(x, y) || g(x, y);
-        };
-    };
+    function union(f, g) {
+        return (x, y) => f(x, y) || g(x, y);
+    }
 
     // Boolean analogue of material conditional ("ONLY IF").
-    var arrow = function (f, g) {
+    function arrow(f, g) {
         return union(compl(f), g);
-    };
+    }
 
     // Creates a positive Venn diagram shader (usual convention).
-    var createShader = function (fgcolor, weight, mesh, ox, oy) {
-        return function (f) {
+    function createShader(fgcolor, weight, mesh, ox, oy) {
+        return f => {
             stroke(fgcolor);
             strokeWeight(weight);
 
-            var xmin = UNIVERSE_LEFTSIDE + ox;
-            var xmax = UNIVERSE_LEFTSIDE + UNIVERSE_WIDTH;
-            var ymin = UNIVERSE_TOPSIDE + oy;
-            var ymax = UNIVERSE_TOPSIDE + UNIVERSE_HEIGHT;
+            const xmin = UNIVERSE_LEFTSIDE + ox;
+            const xmax = UNIVERSE_LEFTSIDE + UNIVERSE_WIDTH;
+            const ymin = UNIVERSE_TOPSIDE + oy;
+            const ymax = UNIVERSE_TOPSIDE + UNIVERSE_HEIGHT;
 
-            for (var x = xmin; x <= xmax; x += mesh) {
-                for (var y = ymin; y <= ymax; y += mesh) {
+            for (let x = xmin; x <= xmax; x += mesh) {
+                for (let y = ymin; y <= ymax; y += mesh) {
                     if (f(x, y)) {
                         point(x, y);
                     }
                 }
             }
         };
-    };
+    }
 
     // Converts positive to negative shaders and vice versa.
-    var negateShader = function (shader) {
-        return function (f) {
-            return shader(compl(f));
-        };
-    };
+    function negateShader(shader) {
+        return f => shader(compl(f));
+    }
 
     // A few Venn diagram shaders, positive (usual) convention.
-    var ppolka = createShader(color(255, 0, 0), 4, 8, 2, 2);
-    var pocean = createShader(color(0, 0, 255), 1, 2, 1, 1);
-    var psquid = createShader(color(0, 0, 0), 2, 5, 3, 3);
+    const ppolka = createShader(color(255, 0, 0), 4, 8, 2, 2);
+    const pocean = createShader(color(0, 0, 255), 1, 2, 1, 1);
+    const psquid = createShader(color(0, 0, 0), 2, 5, 3, 3);
 
     // A few Venn diagram shaders, negative (Quine) convention.
-    var npolka = negateShader(ppolka);
-    var nocean = negateShader(pocean);
-    var nsquid = negateShader(psquid);
+    const npolka = negateShader(ppolka);
+    const nocean = negateShader(pocean);
+    const nsquid = negateShader(psquid);
 
     (function () {
-        var r = 80;
+        const r = 80;
 
-        var v = makeUniverse();
-        var f = makeCircle(145, 140, r);
-        var g = makeCircle(235, 140, r);
-        var h = makeCircle(190, 220, r);
+        const v = makeUniverse();
+        const f = makeCircle(145, 140, r);
+        const g = makeCircle(235, 140, r);
+        const h = makeCircle(190, 220, r);
 
         // \forall x\, [(Sx \wedge Tx) \rightarrow Fx]
         npolka(arrow(intersection(g, h), f));
@@ -127,4 +127,4 @@
         // Gj
         nsquid(g);
     })();
-})();
+}
