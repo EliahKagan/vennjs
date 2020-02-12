@@ -35,7 +35,7 @@ function main() {
     const UNIVERSE_WIDTH = 350;
     const UNIVERSE_HEIGHT = 325;
 
-    function makeUniverse() {
+    function drawUniverse() {
         fill(FILL_COLOR);
         stroke(BORDER_COLOR);
         strokeWeight(UNIVERSE_STROKE_WEIGHT);
@@ -45,7 +45,7 @@ function main() {
         return (x, y) => true;
     }
 
-    function makeCircle(cx, cy, r) {
+    function drawClass(cx, cy, r) {
         fill(FILL_COLOR);
         stroke(BORDER_COLOR);
         strokeWeight(CLASS_STROKE_WEIGHT);
@@ -71,11 +71,29 @@ function main() {
 
     // Boolean analogue of material conditional ("ONLY IF").
     function arrow(f, g) {
-        return union(compl(f), g);
+        return (x, y) => !f(x, y) || g(x, y);
     }
 
+    // Boolean analogue of biconditional ("IF AND ONLY IF").
+    function equiv(f, g) {
+        return (x, y) => f(x, y) == g(x, y);
+    }
+
+    // Symmetric difference ("XOR").
+    function symdiff(f, g) {
+        return (x, y) => f(x, y) != g(x, y);
+    }
+
+    // Propositional logic aliases.
+    const not = compl;
+    const and = intersection;
+    const or = union;
+    const onlyif = arrow;
+    const iff = equiv;
+    const xor = symdiff;
+
     // Creates a positive Venn diagram shader (usual convention).
-    function createShader(fgcolor, weight, mesh, ox, oy) {
+    function makeShader(fgcolor, weight, mesh, ox, oy) {
         return f => {
             stroke(fgcolor);
             strokeWeight(weight);
@@ -101,23 +119,17 @@ function main() {
     }
 
     // A few Venn diagram shaders, positive (usual) convention.
-    const ppolka = createShader(color(255, 0, 0), 4, 8, 2, 2);
-    const pocean = createShader(color(0, 0, 255), 1, 2, 1, 1);
-    const psquid = createShader(color(0, 0, 0), 2, 5, 3, 3);
+    const ppolka = makeShader(color(255, 0, 0), 4, 8, 2, 2);
+    const pocean = makeShader(color(0, 0, 255), 1, 2, 1, 1);
+    const psquid = makeShader(color(0, 0, 0), 2, 5, 3, 3);
 
     // A few Venn diagram shaders, negative (Quine) convention.
     const npolka = negateShader(ppolka);
     const nocean = negateShader(pocean);
     const nsquid = negateShader(psquid);
 
-    (function () {
-        const r = 80;
-
-        const v = makeUniverse();
-        const f = makeCircle(145, 140, r);
-        const g = makeCircle(235, 140, r);
-        const h = makeCircle(190, 220, r);
-
+    // Reasoning about safety of giant tomato-juice vats.
+    function demoTomatoJuiceDivers(f, g, h) {
         // \forall x\, [(Sx \wedge Tx) \rightarrow Fx]
         npolka(arrow(intersection(g, h), f));
 
@@ -126,5 +138,26 @@ function main() {
 
         // Gj
         nsquid(g);
+    }
+
+    // Reasoning about distributivity.
+    function makeDistrbutivityDemo(op1, op2) {
+        return (f, g, h) => {
+            ppolka(op1(f, op2(g, h)));
+            pocean(op2(op1(f, g), op1(f, h)));
+        };
+    }
+
+    (function () {
+        const r = 80;
+
+        const v = drawUniverse();
+        const f = drawClass(145, 140, r);
+        const g = drawClass(235, 140, r);
+        const h = drawClass(190, 220, r);
+
+        //demoTomatoJuiceDivers(f, g, h);
+        makeDistrbutivityDemo(iff, xor)(f, g, h);
+        //makeDistrbutivityDemo(xor, iff)(f, g, h);
     })();
 }
