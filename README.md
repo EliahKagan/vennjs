@@ -10,7 +10,9 @@ worldwide. This software is distributed without any warranty.*
 this software. If not, see
 <http://creativecommons.org/publicdomain/zero/1.0/>.*
 
-This version uses p5.js.
+This version uses [p5.js](https://p5js.org/) (v0.10.2). That library [is
+licensed](https://github.com/processing/p5.js/blob/master/license.txt) under
+the GNU LGPL v2.1.
 
 This is (usually) the same code as [hosted in the p5js web
 editor](https://editor.p5js.org/Eliah/sketches/YODuj_T-).

@@ -12,7 +12,7 @@
 
 function setup() {
     'use strict';
-    createCanvas(400, 400);
+    createCanvas(400, 400).parent('venn');
     noLoop();
 }
 
